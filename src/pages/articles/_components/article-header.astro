@@ -8,16 +8,16 @@ import Calendar04 from "~/assets/svgs/calendar-04.astro";
 import Divider from "~/components/bases/divider.astro";
 import { categoriesHandler } from "~/lib/handlers/categories";
 import { authorsHandler } from "~/lib/handlers/authors";
+import type { WPArticle } from "~/lib/types";
 
 type Props = {
-  article: CollectionEntry<"articles">;
-  readingTime: string;
+  article: WPArticle;
 };
 
-const { article, readingTime } = Astro.props;
+const { article } = Astro.props;
 
-const category = categoriesHandler.oneCategory(article.data.category.id);
-const authors = authorsHandler.getAuthors(article.data.authors);
+const category = await categoriesHandler.oneCategory(article.category);
+// const authors = authorsHandler.getAuthors(article.data.authors);
 ---
 
 <section
@@ -26,32 +26,30 @@ const authors = authorsHandler.getAuthors(article.data.authors);
   <div
     class="container px-0 lg:px-4 max-w-5xl aspect-[20/9] lg:mt-4 overflow-hidden"
   >
-    <Picture
-      src={article.data.cover}
+    <img
+      src={article.image}
       alt="article"
-      layout="full-width"
       decoding={"async"}
       loading={"lazy"}
-      formats={["avif", "webp"]}
       class="w-full h-full object-cover"
     />
   </div>
   <div class="container my-4 lg:hidden flex items-center gap-2">
     <ResourcesAdd size="16" />
-    <a href={`/categories/${category.data.path}`} class="a-01 font-semibold"
-      >{category.data.title}</a
+    <a href={`/categories/${category.slug}`} class="a-01 font-semibold"
+      >{category.name}</a
     >
   </div>
   <div class="container max-w-5xl">
     <h1 class="text-2xl lg:text-4xl font-bold text-left text-pretty">
-      {article.data.title}
+      {article.title}
     </h1>
     <div class="flex flex-col gap-4 items-start mt-2 lg:mt-6 text-sm">
       <div class="text-base-content/70 flex items-center gap-2">
         <span class="lg:flex items-center gap-1 hidden">
           <ResourcesAdd size="15" />
           <a href={`/categories/${category.id}`} class="a-01 font-semibold"
-            >{category.data.title}</a
+            >{category.name}</a
           >
         </span>
         <div class="hidden lg:block">
@@ -59,22 +57,21 @@ const authors = authorsHandler.getAuthors(article.data.authors);
         </div>
         <span class="flex items-center gap-1">
           <Calendar04 size="15" />
-          <time class="hidden lg:block" datetime={article.data.publishedTime}
-            >{formatDate(article.data.publishedTime, "long")}</time
+          <time class="hidden lg:block" datetime={article.publishedDate}
+            >{formatDate(article.publishedDate, "long")}</time
           >
-          <time class="block lg:hidden" datetime={article.data.publishedTime}
-            >{formatDate(article.data.publishedTime, "short")}</time
+          <time class="block lg:hidden" datetime={article.publishedDate}
+            >{formatDate(article.publishedDate, "short")}</time
           >
         </span>
         <Divider />
         <span class="flex items-center gap-1">
           <Time04 size="15" />
-          <span>{readingTime}</span>
         </span>
       </div>
       <!-- TODO: fix name, href, avatar of author -->
       <div class="flex flex-wrap gap-4">
-        {
+        <!-- {
           authors.map((author) => (
             <div class="flex items-center gap-2">
               <a href={`/authors/${author.id}`} class="flex items-center gap-2">
@@ -94,7 +91,7 @@ const authors = authorsHandler.getAuthors(article.data.authors);
               </a>
             </div>
           ))
-        }
+        } -->
       </div>
     </div>
   </div>

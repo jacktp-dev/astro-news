@@ -7,15 +7,23 @@ import pagefind from "astro-pagefind";
 
 import sitemap from "@astrojs/sitemap";
 
+import vercelServerless from '@astrojs/vercel/serverless';
+
 // https://astro.build/config
 export default defineConfig({
   site: SITE.url,
   base: SITE.basePath,
+
   markdown: {
     remarkPlugins: [readingTime, modifiedTime],
   },
+
   integrations: [tailwind(), mdx(), sitemap(), pagefind()],
+
   experimental: {
     responsiveImages: true,
   },
+
+  output: "server",
+  adapter: vercelServerless(),
 });

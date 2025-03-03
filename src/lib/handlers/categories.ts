@@ -1,14 +1,37 @@
-import { getCollection } from "astro:content";
-
-const categoriesCollection = await getCollection('categories');
+import type { WPCategory } from "../types";
 
 export const categoriesHandler = {
-    allCategories: () => categoriesCollection,
-    oneCategory: (categoryId: string) => {
-        const category = categoriesCollection.find((category) => category.id === categoryId);
-        if (!category) {
-            throw new Error(`Category with id ${categoryId} not found`);
-        }
-        return category;
-    },
-}
+  allCategories: async (): Promise<WPCategory[]> => {
+    const response = await fetch("https://www.diarioamanecer.net/wp-json/wp/v2/categories");
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch categories");
+    }
+
+    const categories = await response.json();
+
+    return categories.map((category: any) => ({
+      id: category.id,
+      count: category.count,
+      name: category.name,
+      slug: category.slug,
+    }));
+  },
+
+  oneCategory: async (categoryId: number): Promise<WPCategory> => {
+    const response = await fetch(`https://www.diarioamanecer.net/wp-json/wp/v2/categories/${categoryId}`);
+
+    // if (!response.ok) {
+    //   throw new Error(`Category with id ${categoryId} not found`);
+    // }
+
+    const category = await response.json();
+
+    return {
+      id: category.id,
+      count: category.count,
+      name: category.name,
+      slug: category.slug,
+    };
+  },
+};

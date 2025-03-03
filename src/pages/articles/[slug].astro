@@ -1,0 +1,23 @@
+---
+export const prerender = false;
+import { articlesHandler } from "~/lib/handlers/articles";
+import BaseLayout from "~/layouts/base.astro";
+import ContentLayout from "~/layouts/content.astro";
+import ArticleHeader from "./_components/article-header.astro";
+
+
+const { slug } = Astro.params;
+
+const article = await articlesHandler.getArticleBySlug(slug || "");
+
+if (!article) {
+  throw new Error(`No se encontró el artículo con el slug: ${slug}`);
+}
+---
+
+<BaseLayout entry={article}>
+  <ArticleHeader article={article} />
+  <ContentLayout>
+    <Fragment set:html={article.content} />
+  </ContentLayout>
+</BaseLayout>

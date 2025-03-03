@@ -1,5 +1,41 @@
 import type { CollectionEntry } from "astro:content";
 
+export type WPCategory = {
+  id: number;
+  count: number;
+  name: string;
+  slug: string;
+}
+
+export type WPArticle ={
+  id: number;
+  publishedDate : string;
+  slug: string;
+  status: string;
+  title: string;
+  description:string;
+  content: string;
+  author: number;
+  image: string;
+  category: number
+}
+
+
+/**
+ *
+ * 
+ *   isDraft: z.boolean().default(false),
+   isBigHeadline: z.boolean().default(false),
+   isSmallHeadline: z.boolean().default(false),
+   cover: image(),
+   covert_alt: z.string().optional(),
+   title: z.string().max(60, "Too long, max 60 characters"),
+   description: z.string().max(160, "Too long, max 160 characters"),
+   category: reference("categories"),
+   authors: z.array(reference("authors")).min(1),
+   publishedTime: z.string().datetime(),
+
+ */
 export type Icon = {
   size?: string;
   width?: string;

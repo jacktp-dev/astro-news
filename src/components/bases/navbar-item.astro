@@ -10,12 +10,9 @@ const { item } = Astro.props;
 function isActive(item: Link, currentPath: string) {
   const segment = currentPath.split("/")[2];
   return (
-    (item.text === "Home" && currentPath === "/") ||
-    (item.text === "Articles" &&
-      segment !== undefined &&
-      !isNaN(Number(segment)) &&
-      Number(segment) >= 1) ||
-    (item.text !== "Articles" &&
+    (item.text === "Inicio" && currentPath === "/") ||
+   
+    (item.text !== "Inicio" &&
       currentPath.split("/").includes(item.text.toLocaleLowerCase()))
   );
 }

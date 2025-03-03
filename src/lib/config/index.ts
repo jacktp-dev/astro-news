@@ -1,44 +1,43 @@
-import type { Link } from "../types";
+import type { Link, WPCategory } from "../types";
+import { capitalizeFirstLetter } from "../utils/letter";
 
 export const SITE = {
-  title: "Astro News",
-  description: "A news website built with Astro",
-  author: "Mohammad Rahmani",
-  url: "https://astro-news-six.vercel.app",
-  github: "https://github.com/Mrahmani71/astro-news",
-  locale: "en-US",
+  title: "Diario Amanecer",
+  description:
+    "Un diario con lo último de lo que está sucediendo en la región. Manténte actualizado con nosotros.",
+  author: "Diario Amanecer",
+  url: "https://diarioamanecer.pe",
+  github: "-",
+  locale: "es-PE",
   dir: "ltr",
   charset: "UTF-8",
   basePath: "/",
   postsPerPage: 4,
 };
 
-export const NAVIGATION_LINKS: Link[] = [
-  {
-    href: "/categories/technology",
-    text: "Technology",
-  },
-  {
-    href: "/categories/programming",
-    text: "Programming",
-  },
-  {
-    href: "/categories/lifestyle",
-    text: "Lifestyle",
-  },
-  {
-    href: "/categories/productivity",
-    text: "Productivity",
-  },
-  {
-    href: "/categories/health",
-    text: "Health",
-  },
-  {
-    href: "/categories/finance",
-    text: "Finance",
-  },
-];
+export async function getNavigationLinks(): Promise<Link[]> {
+  try {
+    const response = await fetch(
+      "https://www.diarioamanecer.net/wp-json/wp/v2/categories"
+    );
+    const categories = await response.json();
+    const links = categories
+      .filter((category: any) => category.name !== "INICIO")
+      .map((category: any) => ({
+        href: `/categorias/${category.slug}`,
+        text: capitalizeFirstLetter(category.name.toLocaleLowerCase()),
+      }))
+
+    return links;
+  } catch (error) {
+    console.error("Error al obtener categorías:", error);
+    return [];
+  }
+}
+
+
+export const NAVIGATION_LINKS: Link[] = await getNavigationLinks();
+
 
 export const OTHER_LINKS: Link[] = [
   {
