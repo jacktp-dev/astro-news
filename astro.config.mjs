@@ -7,7 +7,7 @@ import pagefind from "astro-pagefind";
 
 import sitemap from "@astrojs/sitemap";
 
-import vercel from '@astrojs/vercel';
+import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,5 +25,8 @@ export default defineConfig({
   },
 
   output: "server",
-  adapter: vercel(),
+  adapter: vercel({
+    isr: true,
+    expiration:60
+  }),
 });
