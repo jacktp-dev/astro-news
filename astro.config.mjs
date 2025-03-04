@@ -3,11 +3,10 @@ import tailwind from "@astrojs/tailwind";
 import mdx from "@astrojs/mdx";
 import { SITE } from "./src/lib/config";
 import { modifiedTime, readingTime } from "./src/lib/utils/remarks.mjs";
-import pagefind from "astro-pagefind";
 
 import sitemap from "@astrojs/sitemap";
 
-import vercel from '@astrojs/vercel/serverless';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,15 +17,12 @@ export default defineConfig({
     remarkPlugins: [readingTime, modifiedTime],
   },
 
-  integrations: [tailwind(), mdx(), sitemap(), pagefind()],
-
-  experimental: {
-    responsiveImages: true,
-  },
+  integrations: [tailwind(), mdx(), sitemap()],
 
   output: "server",
   adapter: vercel({
-    isr: true,
-    expiration:60
+    isr: {
+      expiration: 60 * 60
+    }
   }),
 });
