@@ -1,9 +1,5 @@
-<!-- ---
-import { Image } from "astro:assets";
-import type { CollectionEntry } from "astro:content";
+---
 import Divider from "~/components/bases/divider.astro";
-import { render } from "astro:content";
-import { getDateDistance } from "~/lib/utils/date";
 import { categoriesHandler } from "~/lib/handlers/categories";
 import type { WPArticle } from "~/lib/types";
 
@@ -12,50 +8,38 @@ type Props = {
   isFirst?: boolean;
   isLast?: boolean;
 };
-const { article, isLast, isFirst } = Astro.props;
 
-const category = await categoriesHandler.oneCategory(article.category); -->
-<!-- --- -->
-<!-- 
-<article
-  class:list={[
-    "group py-2",
-    isFirst ? "pt-0" : "pt-2",
-    isLast ? "border-b-0 pb-0" : "border-b",
-  ]}
->
+const { article, isLast = false, isFirst = false } = Astro.props;
+
+// Aseguramos que article.category sea válido antes de buscar la categoría
+const category = article.category ? await categoriesHandler.oneCategory(article.category) : { name: "Sin categoría" };
+---
+
+<article class={`group py-2 ${isFirst ? "pt-0" : "pt-2"} ${isLast ? "border-b-0 pb-0" : "border-b"}`}>
   <a href={`/articles/${article.slug}`} class="flex items-stretch gap-2 group">
     <div class="flex flex-col flex-1">
       <div class="flex items-center gap-2 mb-1">
         <div class="flex-1">
-          <h2 class="text-base lg:group-hover:underline">
-            {article.title}
-          </h2>
-          <p
-            class="text-sm text-base-content/80 text-balance md:line-clamp-2 lg:line-clamp-3"
-          >
+          <h2 class="text-base lg:group-hover:underline">{article.title}</h2>
+          <p class="text-sm text-base-content/80 text-balance md:line-clamp-2 lg:line-clamp-3">
             {article.description}
           </p>
         </div>
       </div>
-      <div
-        class="flex items-center text-xs text-base-content/80 mt-1 lg:mt-auto"
-      >
+      <div class="flex items-center text-xs text-base-content/80 mt-1 lg:mt-auto">
         <span class="text-primary">{category.name}</span>
         <Divider />
-         <span>{getDateDistance(remarkPluginFrontmatter.lastModified)}</span> 
       </div>
     </div>
 
     <div class="overflow-hidden w-[165px] h-[125px] shrink-0">
       <img
-       
-        
-        loading="eager"
+        src={article.image} 
+        alt={article.title}
         class="object-cover rounded w-full h-full"
         width={165}
         height={125}
       />
     </div>
   </a>
-</article> -->
+</article>
